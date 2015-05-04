@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="../jquery.bootstrap-pureBattery.css">
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="../jquery.bootstrap-pureBattery.js"></script>
+
+<title>pureBattery Example</title>
+</head>
+<body>
+
+<div id="pureBattery1" style="width: 50px; height: 22px; margin: 10px"></div>
+<div id="pureBattery2" style="margin: 10px"></div>
+<div id="pureBattery3" style="margin: 10px"></div>
+<div id="pureBattery4" style="width: 150px; margin: 10px"></div>
+<div id="pureBattery5" style="width: 150px; margin: 10px"></div>
+<div id="pureBattery6" style="margin: 10px"></div>
+<div id="pureBattery7" style="margin: 10px"></div>
+
+
+<div id="pureBattery9" style="width: 50px; height: 22px; margin: 10px">
+	<div style="width: 90%; height: 100%;">
+		<div class="progress pure-battery-progress" style="width: 100%; height: 100%; border-color: rgb(51, 51, 51); background-color: rgb(85, 85, 85);">
+			<div id="pure-battery-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-info" style="width: 100%;">
+				<span id="pure-battery-value-span" class="glyphicon glyphicon-flash" style="color: rgb(255, 255, 255);"></span>
+				<div style="margin-left: 10px; text-align: right">sss</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("#pureBattery1").pureBattery();
+		$("#pureBattery2").pureBattery();
+		$("#pureBattery3").pureBattery({
+			width: "100px",
+			height: "30px"
+		});
+		$("#pureBattery4").pureBattery({test: true});
+		$("#pureBattery5").pureBattery({test: true});
+		$("#pureBattery6").pureBattery({test: true});
+		$("#pureBattery7").pureBattery({test: true});
+		
+		var levelIndex = 100;
+		var b = true;
+
+		var testLevel = function(){
+			$("#pureBattery6").pureBattery("test", {"charging": false, "level": (levelIndex)});
+			$("#pureBattery7").pureBattery("test", {"charging": true, "level": (levelIndex)});
+			
+			if(levelIndex <= 0){
+				b = false;
+			}
+			if(levelIndex >= 100){
+				b = true;
+			}
+			
+			if(b){
+				levelIndex--;
+			}else{
+				levelIndex++;
+			}
+			
+			setTimeout(testLevel, 150);
+		}
+		
+		var randomLevel = function(){
+			$("#pureBattery4").pureBattery("test", "level", (Math.random() * 100) + 1);
+			$("#pureBattery5").pureBattery("test", {"charging": true, "level": (Math.random() * 100) + 1});
+			
+			setTimeout(randomLevel, 3000);
+		}
+		
+		setTimeout(randomLevel, 1000)
+		setTimeout(testLevel, 1000)
+	});
+</script>
+</body>
+</html>

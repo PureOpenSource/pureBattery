@@ -1,0 +1,23 @@
+
+.pure-battery-progress {
+	border: 2px solid; 
+	background-image: none;
+}
+
+.pure-battery-background {
+	background-image: url('./images/black.png');
+  	background-position: right center;
+  	background-size: 3px 50%;
+  	background-repeat: no-repeat;
+}
+
+
+.progress {
+    position: relative;
+}
+
+.progress span {
+    position: absolute;
+    display: block;
+    width: 100%;
+ }
