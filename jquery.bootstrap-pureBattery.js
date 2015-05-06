@@ -125,6 +125,9 @@
 			if(levelStep <= 0){
 				levelStep = 5;
 			}
+			if(level >= 100 && levelStep < 100){
+				levelStep = 100;
+			}
 		}
 		battery.viewLevel = level;
 		

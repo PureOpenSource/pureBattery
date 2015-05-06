@@ -57,11 +57,6 @@ $(document).ready(function(){
 		example.info.isStart = !example.info.isStart;
 	});
 	
-	$("#customLevelValue").on("change", example.customTestOption);
-	$("#customLevel").on("click", example.customTestOption);
-	$("#customCharge").on("change", example.customTestOption);
-	
-	
 	///////////////////////////////////////////////////////////
 	$("#pureBattery-default").pureBattery();
 	$("#pureBattery-custom_wh").pureBattery();
@@ -97,8 +92,6 @@ $(document).ready(function(){
 	$("#pureBattery-charging-random").pureBattery({test: true});
 	$("#pureBattery-not_charging-minus").pureBattery({test: true});
 	$("#pureBattery-charging-plus").pureBattery({test: true});
-	
-	$("#pureBattery-demo").pureBattery({test: true});
 	
 	example.init();
 });
@@ -176,15 +169,4 @@ var example = {
 		changeWidth: function(width){
 			$(".change-width").css({"width": width+"px"});
 		},
-		
-		customTestOption: function(e){
-			var charging = $("#customCharge").prop("checked");
-			var level = $("#customLevelValue").val();
-			
-			console.log(charging, level);
-			
-			$("#pureBattery-demo").pureBattery('test', {"charging": charging, "level": level});
-			
-			$("#customCharge").parent().find("span").html(charging ? "Charging" : "Not Charging");
-		}
 }
