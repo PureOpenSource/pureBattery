@@ -244,7 +244,7 @@
 		if(typeof name == 'object'){
 			testObject = name;
 		}
-		else if(typeof name == 'string' && this.batteryInfo[name] != undefined){
+		else if(typeof name == 'string' && this.testBatteryInfo[name] != undefined){
 			testObject[name] = value;
 		}
 		else{

@@ -144,7 +144,7 @@ var example = {
 		},
 		
 		randomLevel: function(){
-			$("#pureBattery-not_charging-random").pureBattery("test", "level", (Math.random() * 100) + 1);
+			$("#pureBattery-not_charging-random").pureBattery("test", {"charging": false, "level": (Math.random() * 100) + 1});
 			$("#pureBattery-charging-random").pureBattery("test", {"charging": true, "level": (Math.random() * 100) + 1});
 		},
 		
