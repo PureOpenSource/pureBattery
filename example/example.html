@@ -215,9 +215,9 @@
 									<div class="col-md-5">
 										<div id="pureBattary-custom_options"></div>
 										<div>
-											<span id="customOptionObject">
+											<div id="customOptionDanger" class="alert" role="alert" style="margin-top: 20px">
 											
-											</span>
+											</div>
 										</div>
 									</div>
 									
@@ -336,6 +336,14 @@
 										</div> <!-- form -->
 										
 										<div class="input-group">
+											<div class="input-group-btn">
+												<div class="btn-group" data-toggle="buttons">
+													<label class="btn btn-primary">
+														<input type="checkbox" autocomplete="off" id="customOption_test_Value"><span>test</span>
+													</label>
+												</div>
+											</div>										
+											<div class="input-group-addon"></div>
 											<div class="input-group-addon">Level</div>
 											<input type="range" class="form-control" id="customOption_level_Value" value="100" min="0" max="100">
 											<span class="input-group-addon" style="width: 80px">100</span>
@@ -461,18 +469,21 @@
 		
 		$("#custom-options-form").find("button.btn-default").on("click", function(e){
 			example.customOption($(this).closest(".input-group").find("input"), true);
-		})
-		
-		$("#customOption_level_Value, #customOption_charging_Value").on("input change", function(){
+		});
+		$("#customOption_test_Value").on("change", function(){
+			var test = $(this).prop("checked");
+			$("#pureBattary-custom_options").pureBattery('option', 'test', test);
 			
-			var charging = $("#customOption_charging_Value").prop("checked");
-			var level = $("#customOption_level_Value").val();
-			
-			var $levelPrint = $("#customOption_level_Value").next();
-			$levelPrint.html(level);
-			
-			$("#pureBattary-custom_options").pureBattery('test', {charging: charging, level: level});
-		})
+			if(test){
+				example.customOptionTest();
+			}
+		});
+		$("#customOption_level_Value").on("input", function(){
+			example.customOptionTest();
+		});
+		$("#customOption_charging_Value").on("change", function(){
+			example.customOptionTest();
+		});
 		
 		//////////////////////////////////////////////////////////////
 		
@@ -518,7 +529,29 @@
 			width: "100px",
 			height: "30px"
 		});
-		$("#pureBattary-custom_options").pureBattery({test: true});
+		$("#pureBattary-custom_options").pureBattery();
+		$("#pureBattary-custom_options").on("battery-danger", function(e){
+			var battery = e.battery;
+			
+			var html = '<strong>Warning!</strong> Battery Level: ' + battery.level;
+			
+			$("#customOptionDanger").removeClass(function (index, css){
+				return (css.match (/(^|\s)alert-\S+/g) || []).join(' ');
+			});
+			
+			$("#customOptionDanger").addClass('alert-warning').html(html);
+		});
+		$("#pureBattary-custom_options").on("battery-stable", function(e){
+			var battery = e.battery;
+			
+			var html = '<strong>Stable!</strong> Battery Level: ' + battery.level;
+			
+			$("#customOptionDanger").removeClass(function (index, css){
+				return (css.match (/(^|\s)alert-\S+/g) || []).join(' ');
+			});
+			
+			$("#customOptionDanger").addClass('alert-success').html(html);
+		});
 		
 		$("#pureBattery-not_charging-random").pureBattery({test: true});
 		$("#pureBattery-charging-random").pureBattery({test: true});
@@ -558,6 +591,16 @@
 				}
 				
 				$("#pureBattary-custom_options").pureBattery('option', optionName, optionValue);
+			},
+			
+			customOptionTest: function(){
+				var charging = $("#customOption_charging_Value").prop("checked");
+				var level = $("#customOption_level_Value").val();
+				
+				var $levelPrint = $("#customOption_level_Value").next();
+				$levelPrint.html(level);
+				
+				$("#pureBattary-custom_options").pureBattery('test', {charging: charging, level: level});
 			},
 			
 			randomLevel: function(){
