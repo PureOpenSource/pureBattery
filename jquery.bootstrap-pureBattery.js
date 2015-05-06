@@ -4,18 +4,21 @@
 
 (function($) {
 	var definInfo = {
-			dataKey: 'pureBatteryOptions',
+			optionDataKey: 'pureBatteryOptions',
+			batteryDataKey: 'pureBatteryInfo',
 			progressBarId: 'pure-battery-progressbar',
 			levelValueId: 'pure-battery-value-span',
 			
 	}
 	
 	var updateBatteryStatus = function(element, battery) {
-		var option = element.data()[definInfo.dataKey];
+		var option = element.data()[definInfo.optionDataKey];
 		
 		if(!option){
 			return;
 		}
+		
+		element.data(definInfo.batteryDataKey, battery);
 		
 		var charging = battery.charging;
 		var level = Math.round(battery.level * 100);
@@ -75,26 +78,31 @@
 			return;
 		}
 		
-		element.data(definInfo.dataKey, option);
+		element.data(definInfo.optionDataKey, option);
 		
-		if(!element.prop('style').width){
+		if(!element.prop('style').width || option.options){
 			element.css({'width': option.width});
 		}
-		if(!element.prop('style').height){
+		if(!element.prop('style').height || option.options){
 			element.css({'height': option.height});
 		}
+		option.width = element.prop('style').width;
+		option.height = element.prop('style').height;
 		
-		var main = $('<div></div>')
+		if(option.options){
+			element.find(".pure-battery-progress").css({'background-color': option.backgroupColor, 'border-color': option.borderColor});
+		}else{
+			var main = $('<div></div>')
 			.css({'width': '100%', 'height': '100%', 'display': 'inline-block'})
 			.appendTo(element);
-		
-		var progress = $('<div></div>')
+			
+			var progress = $('<div></div>')
 			.addClass('progress pure-battery-progress')
 			.css({'width': '100%', 'height': '100%'})
 			.css({'background-color': option.backgroupColor, 'border-color': option.borderColor})
 			.appendTo(main);
-		
-		$('<div></div>')
+			
+			$('<div></div>')
 			.attr('id', definInfo.progressBarId)
 			.attr('role', 'progressbar')
 			.attr('aria-valuemin', '0')
@@ -102,6 +110,7 @@
 			.addClass('progress-bar')
 			.css({'width': '100%'})
 			.appendTo(progress);
+		}
 	}
 	
 	var callDangerFunction = function(data, option){
@@ -141,8 +150,45 @@
 		}
 
 		if(option && typeof(option) != 'object'){
-			var batteryOption = element.data()[definInfo.dataKey];
-			if(batteryOption.test && option === 'test'){
+			var batteryOption = element.data()[definInfo.optionDataKey];
+			
+			if(!batteryOption){
+				console.log("not found pure battery option.");
+				return $(this);
+			}
+			
+			if(option === 'option'){
+				if(!optionName && !optionValue){
+					return batteryOption;
+				}
+				
+				var userOptions;
+				if(typeof(optionName) === 'object'){
+					userOptions = $.extend({}, batteryOption, optionName);
+				}else{
+					if(!batteryOption[optionName]){
+						console.error("not option. " + optionName);
+						return $(this);
+					}
+					
+					if(!optionValue){
+						return batteryOption[optionName];
+					}
+					
+					batteryOption[optionName] = optionValue;
+					userOptions = batteryOption;
+				}
+				userOptions['options'] = true;
+				
+				makeBattery(element, userOptions);
+				
+				var battery = element.data()[definInfo.batteryDataKey];
+				if(battery){
+					updateBatteryStatus(element, battery);
+				}
+			}
+			
+			else if(batteryOption.test && option === 'test'){
 				if(typeof(optionName) === 'object'){
 					var userOptions = $.extend({}, defaultOptions, optionName);
 					
@@ -160,8 +206,10 @@
 			return $(this);
 		}
 		
-		if(element.data()[definInfo.dataKey]){
+		if(element.data()[definInfo.optionDataKey]){
 			console.log('exist pure battry.');
+			
+			
 			return $(this);
 		}
 		
