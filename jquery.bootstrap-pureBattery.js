@@ -1,18 +1,25 @@
-/**
+/*********************************************************************************************
+ * PureBattery. v0.1-beta
+ * ===========================================================================================
+ * homepage: http://pureopensource.github.io/pureBattery/
  * 
- */
+ * Copyright 2015 Pure OpenSource.
+ * Licensed under MIT (https://github.com/PureOpenSource/pureBattery/blob/master/LICENSE)
+ *********************************************************************************************/
 
 +function($) {
 	'use strict';
 	
 	/**
-	 * Pure Battery Class Definition. 
+	 * Pure Battery - Class Definition. 
 	 */
 	
 	var PureBattery = function(element, options){
 		this.options = options;
 		this.$element = element;
-		this.batteryInfo = null;
+		
+		this.orginalBatteryInfo = null;
+		this.testBatteryInfo = null;
 		
 		this.makeBattery();
 		this.addBatteryEvent();
@@ -41,6 +48,7 @@
 		progressStep: 5,
 	}
 	
+	// initial battery.
 	PureBattery.prototype.makeBattery = function(){
 		var $element = this.$element;
 		var options = this.options;
@@ -74,6 +82,7 @@
 		.appendTo(progress);
 	}
 	
+	// option method.
 	PureBattery.prototype.updateBattery = function(){
 		var $element = this.$element;
 		var options = this.options;
@@ -84,16 +93,26 @@
 		$element.find(".pure-battery-progress").css({'background-color': options.backgroupColor, 'border-color': options.borderColor});
 	}
 	
+	// Battery Status.
 	PureBattery.prototype.updateBatteryStatus = function(battery){
 		var $element = this.$element;
 		var options = this.options;
 
-		if(this.options.test){
-			battery = $.extend({}, this.batteryInfo, battery); 
-		}else if(!battery){
-			battery = this.batteryInfo;
+		// test method.
+		if(options.test){
+			if(this.testBatteryInfo == null) this.testBatteryInfo = this.orginalBatteryInfo;
+			battery = $.extend({}, this.testBatteryInfo, battery);
+			
+			this.testBatteryInfo = battery;
 		}
-		this.batteryInfo = battery;
+		// no test. options method.
+		else if(!battery){
+			battery = this.orginalBatteryInfo;
+		}
+		// battery event
+		else{
+			this.orginalBatteryInfo = battery;
+		}
 		
 		var charging = battery.charging;
 		var level = Math.round(battery.level * 100);
@@ -103,21 +122,22 @@
 			levelStep = Math.floor(level / options.progressStep) * options.progressStep;
 			
 			// min width
-			if(levelStep < options.progressStep){
-				levelStep = options.progressStep / 2;
+			if(levelStep <= 0){
+				levelStep = 5;
 			}
 		}
-		this.batteryInfo.viewLevel = level;
+		battery.viewLevel = level;
 		
 		var progressbar = $element.find('#'+PureBattery.DEFIN.progressBarId);
 		
-		progressbar.removeClass('progress-bar-success progress-bar-warning progress-bar-danger progress-bar-info');
+		progressbar.removeClass(function (index, css){
+			return (css.match (/(^|\s)progress-bar-\S+/g) || []).join(' ');
+		});
 		progressbar.find('#'+PureBattery.DEFIN.levelValueId).remove();
 		
 		var batteryValue = $('<span></span>')
 			.attr('id', PureBattery.DEFIN.levelValueId)
 			.css({'color': options.fontColor});
-			
 			
 		if(charging){
 			progressbar.addClass('progress-bar-info');
@@ -139,39 +159,34 @@
 		}
 		progressbar.css({'width': levelStep + '%'});
 		
-		this.eventTrigger();
+		this.eventTrigger(battery);
 	}
 	
+	// Battery addEventListerner.
 	PureBattery.prototype.addBatteryEvent = function(){
 		var THIS = this;
 		var options = this.options;
 		
 		navigator.getBattery().then(function(battery) {
-			THIS.batteryInfo = battery;
+			// initial value.
+			THIS.orginalBatteryInfo = battery;
 			
+			// initial battery status.
 			THIS.updateBatteryStatus(battery);
 			
-	  		battery.addEventListener('chargingchange', function() {
-	  			if(options.test){
-	  				return;
-	  			}
-	  			
+			var eventFunction = function(){
+				if(options.test) return;
 	  			THIS.updateBatteryStatus(battery);
-	  		}, false);
-
-	  		battery.addEventListener('levelchange', function() {
-	  			if(options.test){
-	  				return;
-	  			}
-	  			
-	  			THIS.updateBatteryStatus(battery);
-	  		}, false);
+			}
+			
+	  		battery.addEventListener('chargingchange', eventFunction, false);
+	  		battery.addEventListener('levelchange', eventFunction, false);
 	  	});			
 	}
 	
-	PureBattery.prototype.eventTrigger = function(){
+	// Battery Danger, Stable Event Trigger execute.
+	PureBattery.prototype.eventTrigger = function(battery){
 		var options = this.options;
-		var battery = this.batteryInfo;
 
 		var event = null;
 		if(!battery.charging && battery.viewLevel <= options.dangerLevel){
@@ -180,6 +195,7 @@
 		else{
 			event = $.Event(PureBattery.DEFIN.StableCallbackEvent);
 		}
+		// custom event object.
 		event.battery = {
 				level: battery.viewLevel,
 				charging: battery.charging,
@@ -188,9 +204,10 @@
 		this.$element.trigger(event);
 	}
 	
-	
+	// PureBattery option get, set method.
 	PureBattery.prototype.option = function(name, value){
-		if(!name && !value){
+		// Options object return;
+		if(name == undefined && value == undefined){
 			return this.options;
 		}
 		
@@ -198,6 +215,10 @@
 			$.extend(this.options, name);
 		}
 		else if(typeof name == 'string' && this.options[name] != undefined){
+			if(value == undefined){
+				return this.options[name];
+			}
+			
 			this.options[name] = value;
 		}
 		else{
@@ -210,7 +231,8 @@
 		
 		return;
 	}
-	
+
+	// option 'test' true. battery level, charging test method.
 	PureBattery.prototype.test = function(name, value){
 		if(!this.options.test){
 			console.log("disable test option. ", this.options.test);
@@ -238,7 +260,7 @@
 	}
 	
 	/**
-	 * Pure Battery Plug-in Definition.
+	 * Pure Battery - Plug-in Definition.
 	 */
 	
 	function Plugin(option, _relatedTarget, _relatedValue){
@@ -253,10 +275,24 @@
 		var options = $.extend({}, PureBattery.DEFAULTS, $this.data, typeof option == 'object' && option);
 
 		if(!data) $this.data('pure.pureBattery', (data = new PureBattery(this, options)));
-		if(typeof option == 'string') return data[option](_relatedTarget, _relatedValue);
+		if(typeof option == 'string'){
+			var returnValue = data[option](_relatedTarget, _relatedValue);
+			return returnValue == undefined ? $this : returnValue;
+		}
 	}
+	
+	var old = $.fn.pureBattery; 
 	
 	$.fn.pureBattery = Plugin;
 	$.fn.pureBattery.Constructor = PureBattery;
+	
+	/**
+	 * Pure Battery - no Conflict
+	 */
+	
+	$.fn.pureBattery.noConflict = function(){
+		$.fn.pureBattery = old;
+		return this;
+	}
 	
 }(jQuery);
