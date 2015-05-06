@@ -7,14 +7,6 @@
  * Licensed under MIT (https://github.com/PureOpenSource/pureBattery/blob/master/LICENSE)
  *********************************************************************************************/
 
-<<<<<<< HEAD
-(function($) {
-	var definInfo = {
-			dataKey: 'pureBatteryOptions',
-			progressBarId: 'pure-battery-progressbar',
-			levelValueId: 'pure-battery-value-span',
-			
-=======
 +function($) {
 	'use strict';
 	
@@ -31,7 +23,6 @@
 		
 		this.makeBattery();
 		this.addBatteryEvent();
->>>>>>> refs/remotes/github/design
 	}
 	
 	PureBattery.VERSION = '0.1-beta';
@@ -126,30 +117,9 @@
 		var charging = battery.charging;
 		var level = Math.round(battery.level * 100);
 		var levelStep = level;
-<<<<<<< HEAD
-		if(option.progressStep > 0){
-			// progressStep
-			levelStep = Math.floor(level / option.progressStep) * option.progressStep;
-			
-			// min width
-			if(levelStep < option.progressStep){
-				levelStep = option.progressStep / 2;
-			}
-		}
-		
-		var progressbar = element.find('#'+definInfo.progressBarId);
-		
-		progressbar.removeClass('progress-bar-success progress-bar-warning progress-bar-danger progress-bar-info');
-		progressbar.find('#'+definInfo.levelValueId).remove();
-		
-		var batteryValue = $('<span></span>')
-			.attr('id', definInfo.levelValueId)
-			.css({'color': option.fontColor});
-=======
 		if(options.progressStep > 0){
 			// progressStep
 			levelStep = Math.floor(level / options.progressStep) * options.progressStep;
->>>>>>> refs/remotes/github/design
 			
 			// min width
 			if(levelStep <= 0){
@@ -171,24 +141,12 @@
 			
 		if(charging){
 			progressbar.addClass('progress-bar-info');
-<<<<<<< HEAD
-			progressbar.append(batteryValue.addClass('glyphicon ' + option.chargingIcon));
-=======
 			progressbar.append(batteryValue.addClass('glyphicon ' + options.chargingIcon));
->>>>>>> refs/remotes/github/design
 		}else{
-<<<<<<< HEAD
-			if(level > option.warningLevel){
-=======
 			if(level > options.warningLevel){
->>>>>>> refs/remotes/github/design
 				progressbar.addClass('progress-bar-success');
 			}
-<<<<<<< HEAD
-			else if(level > option.dangerLevel){
-=======
 			else if(level > options.dangerLevel){
->>>>>>> refs/remotes/github/design
 				progressbar.addClass('progress-bar-warning');
 			}
 			else{
@@ -201,123 +159,13 @@
 		}
 		progressbar.css({'width': levelStep + '%'});
 		
-<<<<<<< HEAD
-		var data = 
-			{
-				charging: charging, 
-				level: level, 
-				//chargingTime: battery.chargingTime, 
-				//dischargingTime: battery.dischargingTime
-			};
-		callDangerFunction(data, option);
-	}
-
-	var makeBattery = function(element, option){
-		if(!element){
-			return;
-		}
-		
-		element.data(definInfo.dataKey, option);
-		
-		if(!element.prop('style').width){
-			element.css({'width': option.width});
-		}
-		if(!element.prop('style').height){
-			element.css({'height': option.height});
-		}
-		
-		var main = $('<div></div>')
-			.css({'width': '100%', 'height': '100%', 'display': 'inline-block'})
-			.appendTo(element);
-		
-		var progress = $('<div></div>')
-			.addClass('progress pure-battery-progress')
-			.css({'width': '100%', 'height': '100%'})
-			.css({'background-color': option.backgroupColor, 'border-color': option.borderColor})
-			.appendTo(main);
-		
-		$('<div></div>')
-			.attr('id', definInfo.progressBarId)
-			.attr('role', 'progressbar')
-			.attr('aria-valuemin', '0')
-			.attr('aria-valuemax', '100')
-			.addClass('progress-bar')
-			.css({'width': '100%'})
-			.appendTo(progress);
-=======
 		this.eventTrigger(battery);
->>>>>>> refs/remotes/github/design
 	}
 	
-<<<<<<< HEAD
-	var callDangerFunction = function(data, option){
-		if(!data.charging && data.level <= option.dangerLevel && 
-				option.dangerCallback && typeof(option.dangerCallback) === 'function'){
-			option.dangerCallback(data);
-		}
-	}
-	
-	var defaultSettings = {
-			test: false,
-			width: '50px',
-			height: '22px',
-			fontColor: '#fff',
-			borderColor: '#333',
-			backgroupColor: '#555', 
-			chargingIcon: 'glyphicon-flash',
-			warningLevel: 50,
-			dangerLevel: 30,
-			progressStep: 5,
-			dangerCallback: function(data){
-				console.log('pure battery. danger callback. battey.level: %d', data.level);
-			},
-	};
-	
-	var defaultOptions = {
-			charging: false,
-			level: 100
-	}
-	
-	$.fn.pureBattery = function(option, optionName, optionValue){
-		var element = $(this);
-		
-		if(!navigator.getBattery){
-			console.warn('navigator.gerBattery API\'s not supported browser.');
-			return;
-		}
-
-		if(option && typeof(option) != 'object'){
-			var batteryOption = element.data()[definInfo.dataKey];
-			if(batteryOption.test && option === 'test'){
-				if(typeof(optionName) === 'object'){
-					var userOptions = $.extend({}, defaultOptions, optionName);
-					
-					userOptions.level = userOptions.level / 100;
-					updateBatteryStatus(element, userOptions);
-				}else{
-					if(optionName === 'level'){
-						updateBatteryStatus(element, {charging: false, level: optionValue / 100});					
-					}else{
-						updateBatteryStatus(element, {charging: optionValue, level: 1});
-					}
-				}				
-			}
-			
-			return $(this);
-		}
-		
-		if(element.data()[definInfo.dataKey]){
-			console.log('exist pure battry.');
-			return $(this);
-		}
-		
-		var settings = $.extend({}, defaultSettings, option);
-=======
 	// Battery addEventListerner.
 	PureBattery.prototype.addBatteryEvent = function(){
 		var THIS = this;
 		var options = this.options;
->>>>>>> refs/remotes/github/design
 		
 		navigator.getBattery().then(function(battery) {
 			// initial value.
