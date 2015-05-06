@@ -223,19 +223,19 @@
 	  		updateBatteryStatus(element, battery);
 
 	  		// .. and for any subsequent updates.
-	  		battery.onchargingchange = function() {
+	  		battery.addEventListener('chargingchange', function() {
 	  			if(settings.test){
 	  				return;
 	  			}
 	  			updateBatteryStatus(element, battery);
-	  		};
+	  		}, false);
 
-	  		battery.onlevelchange = function() {
+	  		battery.addEventListener('levelchange', function() {
 	  			if(settings.test){
 	  				return;
 	  			}
 	  			updateBatteryStatus(element, battery);
-	  		};
+	  		}, false);
 	  	});		
 		
 		return $(this);
