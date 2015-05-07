@@ -16,7 +16,7 @@
 	
 	var PureBattery = function(element, options){
 		this.options = options;
-		this.$element = element;
+		this.$element = $(element);
 		
 		this.orginalBatteryInfo = null;
 		this.testBatteryInfo = null;
