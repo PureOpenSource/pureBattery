@@ -41,7 +41,7 @@
 		height: '22px',
 		fontColor: '#ffffff',
 		borderColor: '#333333',
-		backgroupColor: '#555555', 
+		backgroundColor: '#555555', 
 		chargingIcon: 'glyphicon-flash',
 		warningLevel: 50,
 		dangerLevel: 30,
@@ -69,7 +69,7 @@
 		var progress = $('<div></div>')
 		.addClass('progress pure-battery-progress')
 		.css({'width': '100%', 'height': '100%'})
-		.css({'background-color': options.backgroupColor, 'border-color': options.borderColor})
+		.css({'background-color': options.backgroundColor, 'border-color': options.borderColor})
 		.appendTo(main);
 		
 		$('<div></div>')
