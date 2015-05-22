@@ -1,8 +1,6 @@
 /*********************************************************************************************
- * PureBattery. v0.1-beta
+ * PureBattery. v0.1
  * ===========================================================================================
- * homepage: http://pureopensource.github.io/pureBattery/
- * 
  * Copyright 2015 Pure OpenSource.
  * Licensed under MIT (https://github.com/PureOpenSource/pureBattery/blob/master/LICENSE)
  *********************************************************************************************/
@@ -25,7 +23,7 @@
 		this.addBatteryEvent();
 	}
 	
-	PureBattery.VERSION = '0.1-beta';
+	PureBattery.VERSION = '0.1';
 	
 	PureBattery.DEFIN = {
 		progressBarId: 'pure-battery-progressbar',
