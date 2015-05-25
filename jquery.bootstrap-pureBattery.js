@@ -1,5 +1,5 @@
 /*********************************************************************************************
- * PureBattery. v0.1
+ * PureBattery with bootstrap. v0.1
  * ===========================================================================================
  * Copyright 2015 Pure OpenSource.
  * Licensed under MIT (https://github.com/PureOpenSource/pureBattery/blob/master/LICENSE)
