@@ -67,7 +67,7 @@
 			ctx.moveTo(5, 5);
 			ctx.lineTo($canvas.width() - 5 - cornerRadius, 5);
 			
-			ctx.arcTo($canvas.width() - 5, 5, );
+			ctx.arcTo($canvas.width() - 5, 5);
 			
 			ctx.lineTo($canvas.width() - 5, $canvas.height() - 5);
 			ctx.lineTo(5, $canvas.height() - 5);
